@@ -1,6 +1,9 @@
 <template>
     <div>
-        <activity-item-update v-if="isUpdateActive"/>
+        <activity-item-update v-if="isUpdateActive"
+                              :activity="activity"
+                              :categories="categories"
+                              @toggleUpdate="changeUpdateState"/>
         <activity-item-detail v-else
                               :activity="activity"
                               :categories="categories"
