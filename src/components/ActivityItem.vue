@@ -1,46 +1,18 @@
 <template>
-    <article class="post">
-        <div class="activity-title-wrapper">
-            <h4 class="activity-title">{{ activity.title }}</h4>
-            <i class="fas fa-cog activity-settings" @click="isMenuDisplayed = !isMenuDisplayed" />
-        </div>
-        <p> {{ textUtility_capitalize(categories[activity.category].text) }}</p>
-        <p> {{ activity.notes }}</p>
-        <div class="media">
-            <div class="media-left">
-                <p class="image is-32x32">
-                    <img src="../assets/user.png">
-                </p>
-            </div>
-            <div class="media-content">
-                <div class="content">
-                    <p>
-                        <a href="#">
-                            Filip Jerga
-                        </a> updated {{ activity.updatedAt | prettyTime }} &nbsp;
-                    </p>
-                </div>
-            </div>
-            <div class="media-right">
-        <span> Progress:
-            <span :style="{'color': activityProgress}">
-                {{ activity.progress }} %
-            </span>
-
-        </span>
-            </div>
-        </div>
-        <div v-if="isMenuDisplayed" class="activity-controll">
-            <a class="button is-warning">Edit</a>
-            <a class="button is-danger" @click="deleteActivity">Delete</a>
-        </div>
-    </article>
+    <div>
+        <activity-item-update v-if="isUpdateActive"/>
+        <activity-item-detail v-else
+                              :activity="activity"
+                              :categories="categories"
+                              @toggleUpdate="changeUpdateState"/>
+    </div>
 </template>
 
 <script>
-import textUtility from "@/mixins/textUtility";
+import ActivityItemDetail from "@/components/ActivityItemDetail";
+import ActivityItemUpdate from "@/components/ActivityItemUpdate";
 export default {
-    mixins:[textUtility],
+    components: {ActivityItemUpdate, ActivityItemDetail},
     props: {
         categories:{
             type:Object,
@@ -51,51 +23,19 @@ export default {
             required: true
         }
     },
-    data () {
+    data() {
         return {
-            isMenuDisplayed: false
-        }
-    },
-    computed: {
-        activityProgress () {
-            const progress = this.activity.progress
-            if (progress <= 0) {
-                return 'red'
-            } else if(progress <= 50){
-                return 'orange'
-            } else {
-                return 'green'
-            }
+            isUpdateActive: false
         }
     },
     methods: {
-        deleteActivity () {
-            this.$emit('activityDeleted', this.activity)
+        changeUpdateState (isUpdate) {
+            this.isUpdateActive = isUpdate
         }
     }
 }
 </script>
 
 <style lang="scss" scoped>
-.activity-title {
-    margin-bottom: 5px;
-    display: inline-block;
-}
-.activity-settings {
-    float: right;
-    font-size: 22px;
-    &:hover {
-        cursor: pointer;
-    }
-}
-.activity-controll {
-    margin: 20px 0 0 0;
-    a {
-        margin-right: 5px;
-    }
-}
 
-.post .title {
-    margin-bottom: 5px;
-}
 </style>

@@ -20,6 +20,10 @@ export const createActivityAPI = (activity) => {
 
 }
 
+export const deleteActivityAPI = (activity) => {
+    return fakeAPI.delete('activities', activity)
+}
+
 export const fetchUser = () => {
     return {
         name: 'Filip Jerga',
