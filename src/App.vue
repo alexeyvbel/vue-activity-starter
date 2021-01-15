@@ -1,5 +1,5 @@
 <template>
-    <div id="activityApp">
+    <div v-if="isDataLoaded" id="activityApp">
         <nav class="navbar is-white topNav">
             <div class="container">
                 <div class="navbar-brand">
@@ -28,6 +28,7 @@
                                            :key="activity.id"
                                            :activity="activity"
                                            :categories="categories"
+                                           @activityDeleted="handleActivityDelete"
                                            />
                         </div>
                         <div v-if="!isFetching">
@@ -62,8 +63,8 @@ export default {
             error: null,
 
             user: {},
-            activities: {},
-            categories: {}
+            activities: null,
+            categories: null
         }
     },
     computed: {
@@ -79,6 +80,9 @@ export default {
             } else {
                 return 'No activities'
             }
+        },
+        isDataLoaded () {
+            return this.categories && this.activities
         }
     },
     watch: {
@@ -112,6 +116,9 @@ export default {
         addActivity (newActivity) {
             Vue.set(this.activities,newActivity.id,newActivity)
             //this.activities[newActivity.id] = newActivity
+        },
+        handleActivityDelete (activity) {
+            console.log(activity)
         }
 
     }

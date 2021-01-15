@@ -3,11 +3,11 @@ import fakeAPI from "@/lib/fakeAPI";
 const generateUid = () => Math.floor(new Date() * Math.random())
 
 export const fetchActivities = () => {
-    return fakeAPI.get('activities')
+    return fakeAPI.get('activities',{force:1})
 }
 
 export const fetchCategories = () => {
-    return fakeAPI.get('categories')
+    return fakeAPI.get('categories',{force:1})
 }
 
 export const createActivityAPI = (activity) => {
@@ -16,9 +16,7 @@ export const createActivityAPI = (activity) => {
     activity.createdAt = new Date()
     activity.updatedAt = new Date()
 
-    return new Promise((resolve, reject) => {
-        resolve(activity)
-    })
+    return fakeAPI.post('activities',activity)
 
 }
 

@@ -28,24 +28,36 @@ const data = {
 class FakeAPI {
     canContinue () {
         const rndNumber = Math.floor(Math.random() * 10)
-        if(rndNumber > 1) {
+        if(rndNumber > 5) {
             return true
         } else {
             return false
         }
     }
 
-    get (resource) {
+    get (resource, {force = 0}) {
         return new Promise(((resolve, reject) => {
-            setTimeout(() => {
-                if (this.canContinue()) {
-                    resolve(data[resource])
+
+            this.asyncCall(() => {
+                if (force || this.canContinue()) {
+                    resolve({...data[resource]})
                 } else {
                     reject('Cannot fetch ' + resource)
                 }
-            }, 1000)
+            })
         }))
 
+    }
+
+    post (resource, item){
+        return new Promise((resolve, reject) => {
+            data[resource][item.id] = item
+            resolve(item)
+        })
+    }
+
+    asyncCall(cb) {
+        setTimeout(cb,1000)
     }
 }
 export default new FakeAPI()
