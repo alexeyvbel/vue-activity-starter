@@ -47,7 +47,8 @@ import Vue from 'vue'
 import ActivityItem from './components/ActivityItem'
 import ActivityCreate from "@/components/ActivityCreate";
 import TheNavbar from "@/components/TheNavbar";
-import {fetchActivities, fetchCategories, fetchUser, deleteActivityAPI} from '@/api'
+import store from './store'
+import { fetchActivities, fetchUser, fetchCategories, deleteActivityAPI } from '@/api'
 
 export default {
     name: 'app',
