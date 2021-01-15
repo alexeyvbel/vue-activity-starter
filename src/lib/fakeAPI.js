@@ -28,7 +28,7 @@ const data = {
 class FakeAPI {
     canContinue () {
         const rndNumber = Math.floor(Math.random() * 10)
-        if(rndNumber > 5) {
+        if(rndNumber > 1) {
             return true
         } else {
             return false

@@ -89,11 +89,12 @@ export default {
           this.watchAppName = value + ' by ' + this.creator
       }
     },
-    beforeCreate() {
-        console.log('beforeCreated called')
-    },
     created() {
         this.isFetching = true
+        fetchCategories()
+            .then(categories => {
+                this.categories = categories
+            })
         fetchActivities()
             .then((activities) => {
                 this.activities = activities
@@ -104,10 +105,7 @@ export default {
                 this.isFetching = false
             })
         this.user = fetchUser()
-        fetchCategories()
-            .then(categories => {
-            this.categories = categories
-        })
+
     },
 
     methods: {
