@@ -79,8 +79,14 @@ export default {
                 return 'No activities'
             }
         },
+        activitiesLength () {
+            return Object.keys(this.activities).length
+        },
+        categoriesLength () {
+            return Object.keys(this.categories).length
+        },
         isDataLoaded () {
-            return this.categories && this.activities
+            return this.activitiesLength && this.categoriesLength
         }
     },
     watch: {

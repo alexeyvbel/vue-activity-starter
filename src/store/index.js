@@ -11,7 +11,6 @@ const store = {
     fetchActivities () {
         return fakeAPI.get('activities',{force:1})
             .then(activities => {
-                const keys = Object.keys(activities)
                 Object.keys(activities).forEach(key =>
                     this.setItem('activities', key, activities[key])
                 )
@@ -37,6 +36,17 @@ const store = {
         return fakeAPI.post('activities',activity)
             .then(createdActivity => {
                 this.setItem('activities', createdActivity.id, createdActivity)
+                return createdActivity
+            })
+    },
+
+    updateActivity (activity) {
+        activity.updatedAt = new Date()
+
+        return fakeAPI.post('activities', activity)
+            .then(updatedActivity => {
+                this.setItem('activities', updatedActivity.id, updatedActivity)
+                return updatedActivity
             })
     },
 
