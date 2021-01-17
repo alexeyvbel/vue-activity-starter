@@ -4,8 +4,7 @@
         <a v-if="!isFormDisplayed"
            href="#"
            class="button is-primary is-block is-alt is-large"
-           @click="toggleFormDisplay"
-        >
+           @click="toggleFormDisplay">
             New Activity
         </a>
         <div v-if="isFormDisplayed" class="create-form">
@@ -61,7 +60,7 @@
 </template>
 
 <script>
-import { createActivityAPI} from "@/api";
+import store from "@/store";
 
 export default {
     name: "ActivityCreate",
@@ -99,11 +98,10 @@ export default {
 
         },
         createActivity() {
-            createActivityAPI({...this.newActivity})
-                .then((activity) => {
+            store.createActivity({...this.newActivity})
+                .then(activity => {
                     this.resetAcitivity()
                     this.isFormDisplayed = false
-                    this.$emit('activityCreated', {...activity})
                 })
         }
     }

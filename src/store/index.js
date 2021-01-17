@@ -1,4 +1,5 @@
 import fakeAPI from "@/lib/fakeAPI";
+import Vue from 'vue'
 
 const store = {
     state: {
@@ -9,22 +10,46 @@ const store = {
 
     fetchActivities () {
         return fakeAPI.get('activities',{force:1})
+            .then(activities => {
+                const keys = Object.keys(activities)
+                Object.keys(activities).forEach(key =>
+                    this.setItem('activities', key, activities[key])
+                )
+                return activities
+            })
     },
 
     fetchCategories () {
         return fakeAPI.get('categories',{force:1})
+            .then(categories => {
+                Object.keys(categories).forEach(key =>
+                    this.setItem('categories', key, categories[key])
+                )
+                return categories
+            })
     },
 
-    createActivityAPI (activity) {
-        activity.id = generateUid()
+    createActivity(activity) {
+        activity.id = this.generateUid()
         activity.progress = 0
         activity.createdAt = new Date()
         activity.updatedAt = new Date()
         return fakeAPI.post('activities',activity)
+            .then(createdActivity => {
+                this.setItem('activities', createdActivity.id, createdActivity)
+            })
     },
 
-    deleteActivityAPI (activity) {
+    deleteActivity (activity) {
         return fakeAPI.delete('activities', activity)
+            .then(deletedActivity => {
+                Vue.delete(this.state.activities, activity.id)
+                return deletedActivity
+            })
+    },
+
+    setItem (resource, id, item) {
+        Vue.set(this.state[resource], id, item)
     },
 
     fetchUser () {

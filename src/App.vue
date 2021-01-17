@@ -11,8 +11,7 @@
         <section class="container">
             <div class="columns">
                 <div class="column is-3">
-                    <activity-create :categories="categories"
-                                     @activityCreated="addActivity"/>
+                    <activity-create :categories="categories"/>
                 </div>
                 <div class="column is-9">
                     <div class="box content "
@@ -27,9 +26,7 @@
                             <activity-item v-for="activity in activities"
                                            :key="activity.id"
                                            :activity="activity"
-                                           :categories="categories"
-                                           @activityDeleted="handleActivityDelete"
-                                           />
+                                           :categories="categories"/>
                         </div>
                         <div v-if="!isFetching">
                             <div class="activity-length"> Currently {{ activityLength }} activites</div>
@@ -48,13 +45,13 @@ import ActivityItem from './components/ActivityItem'
 import ActivityCreate from "@/components/ActivityCreate";
 import TheNavbar from "@/components/TheNavbar";
 import store from './store'
-import { fetchActivities, fetchUser, fetchCategories, deleteActivityAPI } from '@/api'
 
 export default {
     name: 'app',
     // eslint-disable-next-line
-    components: {TheNavbar, ActivityCreate, ActivityItem, fetchUser, fetchCategories, fetchActivities},
+    components: {TheNavbar, ActivityCreate, ActivityItem},
     data() {
+        const { state: {activities, categories}} = store
         return {
             isFormDisplayed: false,
             creator: 'Alexey Belyanin',
@@ -64,8 +61,8 @@ export default {
             error: null,
 
             user: {},
-            activities: null,
-            categories: null
+            activities,
+            categories
         }
     },
     computed: {
@@ -96,34 +93,19 @@ export default {
     },
     created() {
         this.isFetching = true
-        fetchCategories()
+        store.fetchCategories()
             .then(categories => {
-                this.categories = categories
+
             })
-        fetchActivities()
-            .then((activities) => {
-                this.activities = activities
+        store.fetchActivities()
+            .then(activities => {
                 this.isFetching = false
             })
             .catch(err => {
                 this.error = err
                 this.isFetching = false
             })
-        this.user = fetchUser()
-
-    },
-
-    methods: {
-        addActivity (newActivity) {
-            Vue.set(this.activities,newActivity.id,newActivity)
-            //this.activities[newActivity.id] = newActivity
-        },
-        handleActivityDelete (activity) {
-            deleteActivityAPI(activity)
-                .then(deletedActivity => {
-                    Vue.delete(this.activities, deletedActivity.id)
-                })
-        }
+        this.user = store.fetchUser()
 
     }
 }

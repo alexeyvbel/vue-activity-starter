@@ -45,7 +45,7 @@
 
 <script>
 import textUtility from "@/mixins/textUtility";
-
+import store from "@/store";
 export default {
     name: "ActivityItemDetail",
     mixins:[textUtility],
@@ -78,7 +78,7 @@ export default {
     },
     methods: {
         deleteActivity () {
-            this.$emit('activityDeleted', this.activity)
+            store.deleteActivity(this.activity)
         }
     }
 }
