@@ -1,5 +1,5 @@
 <template>
-    <div v-if="isDataLoaded" id="activityApp">
+    <div id="activityApp">
         <nav class="navbar is-white topNav">
             <div class="container">
                 <div class="navbar-brand">
@@ -7,7 +7,7 @@
                 </div>
             </div>
         </nav>
-        <the-navbar/>
+        <the-navbar @filterSelected="setFilter"/>
         <section class="container">
             <div class="columns">
                 <div class="column is-3">
@@ -23,10 +23,14 @@
                             <div v-if="isFetching">
                                 Loading...
                             </div>
-                            <activity-item v-for="activity in activities"
-                                           :key="activity.id"
-                                           :activity="activity"
-                                           :categories="categories"/>
+                            <div v-if="isDataLoaded">
+                                <ActivityItem
+                                    v-for="activity in filteredActivities"
+                                    :key="activity.id"
+                                    :activity="activity"
+                                    :categories="categories"
+                                />
+                            </div>
                         </div>
                         <div v-if="!isFetching">
                             <div class="activity-length"> Currently {{ activityLength }} activites</div>
@@ -45,6 +49,7 @@ import ActivityItem from './components/ActivityItem'
 import ActivityCreate from "@/components/ActivityCreate";
 import TheNavbar from "@/components/TheNavbar";
 import store from './store'
+import fakeAPI from '@/lib/fakeAPI'
 
 export default {
     name: 'app',
@@ -62,10 +67,29 @@ export default {
 
             user: {},
             activities,
-            categories
+            categories,
+            filter: 'all'
         }
     },
     computed: {
+
+        filteredActivities () {
+
+            let condition
+            if (this.filter === 'all') {
+                return this.activities
+            }
+
+            if (this.filter === 'inprogress') {
+                condition = (value) => value > 0 && value < 100
+            } else if (this.filter === 'finished') {
+                condition = (value) => value === 100
+            } else {
+                condition = (value) => value === 0
+            }
+            return Object.values(this.activities)
+                .filter(activity => condition(activity.progress))
+        },
 
         activityLength () {
             return Object.keys(this.activities).length
@@ -98,6 +122,7 @@ export default {
       }
     },
     created() {
+        //fakeAPI.fillDB()
         this.isFetching = true
         store.fetchCategories()
             .then(categories => {
@@ -113,6 +138,12 @@ export default {
             })
         this.user = store.fetchUser()
 
+    },
+
+    methods: {
+        setFilter (filterOption) {
+            this.filter = filterOption
+        }
     }
 }
 </script>
